@@ -13,10 +13,10 @@ the next one starts. Status reflects this repo's `main`.
 | 4 | Provider keys | List with health, add (custom base URL), test, delete with the in-use message | written, not yet run |
 | 5 | Routes | List; the relay editor (add, reorder, remove, timeout); options; create, save, delete | written, not yet run |
 | 6 | Gateway keys | List with revoked filter, create with show-once reveal, budget edit, revoke | written, not yet run |
-| 7 | Overview | Get-started sequence from live data, a curl that calls the user's own route, a 7-day summary | todo |
-| 8 | Usage | Range and route filter, totals, daily chart, by-model table, budget meter, recent requests | todo |
-| 9 | Logs | Logging state, route filter, expandable request and response, load more, delete all | todo |
-| 10 | Settings and account | The whole-document settings form; change password; sign out everywhere | todo |
+| 7 | Overview | Get-started sequence from live data, a curl that calls the user's own route, a 7-day summary | written, not yet run |
+| 8 | Usage | Range and route filter, totals, daily chart, by-model table, budget meter, recent requests | written, not yet run |
+| 9 | Logs | Logging state, route filter, expandable request and response, load more, delete all | written, not yet run |
+| 10 | Settings and account | The whole-document settings form; change password; sign out everywhere | written, not yet run |
 | 11 | Production serving | Caddy serves `dist/` at `/` with SPA fallback, `/api` and `/v1` proxied; `PUBLIC_BASE_URL` = the public origin | open (backend repo: `deploy/`) |
 | 12 | End-to-end tests | Playwright against `make run` and the mock provider: sign-up to first call | open |
 

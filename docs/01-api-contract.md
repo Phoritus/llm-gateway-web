@@ -72,7 +72,8 @@ Passwords are 12 to 1024 characters, and a short list of common ones is refused
   "session": { "expires_at": "…" } }
 ```
 
-`POST /auth/change-password` `{current_password, new_password}` → `200`.
+`POST /auth/change-password` `{current_password, new_password}` → `200`. A wrong
+current password answers `403 invalid_credentials` with `param: "current_password"`.
 `POST /auth/logout-all` → `200`, every session ends.
 
 ## Workspace resources (session and confirmed email needed)

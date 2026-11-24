@@ -1,4 +1,4 @@
-import { QueryClient, queryOptions, useMutation, useQueryClient } from "@tanstack/react-query";
+import { QueryClient, infiniteQueryOptions, queryOptions, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api, ApiError } from "./client";
 import type {
   Credential,
@@ -71,6 +71,14 @@ export function fetchLogs(filter: { route?: string; cursor?: string }) {
   return api.get<LogsPage>(`/logs?${q}`);
 }
 
+export const logsInfiniteQuery = (route?: string) =>
+  infiniteQueryOptions({
+    queryKey: ["logs", route],
+    initialPageParam: undefined as string | undefined,
+    queryFn: ({ pageParam }) => fetchLogs({ route, cursor: pageParam }),
+    getNextPageParam: (last) => last.next_cursor ?? undefined,
+  });
+
 function useInvalidating<TVars, TResult>(fn: (vars: TVars) => Promise<TResult>, keys: string[][]) {
   const qc = useQueryClient();
   return useMutation({
@@ -123,3 +131,10 @@ export const useSaveSettings = () =>
   );
 
 export const useDeleteLogs = () => useInvalidating(() => api.del("/logs"), [["logs"]]);
+
+export const useChangePassword = () =>
+  useMutation({
+    mutationFn: (body: { current_password: string; new_password: string }) => api.post("/auth/change-password", body),
+  });
+
+export const useLogoutAll = () => useMutation({ mutationFn: () => api.post("/auth/logout-all") });

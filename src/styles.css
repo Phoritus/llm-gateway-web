@@ -1,0 +1,95 @@
+@import "tailwindcss";
+@import "@fontsource-variable/instrument-sans";
+@import "@fontsource-variable/jetbrains-mono";
+
+/* The palette is described in docs/03-design-direction.md. Dark values swap in
+   under the system preference; components only ever name the token. */
+@theme {
+  --font-sans: "Instrument Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
+
+  --color-paper: #f2f4f3;
+  --color-surface: #ffffff;
+  --color-ink: #17201c;
+  --color-muted: #5d6a64;
+  --color-line: #d7ddda;
+  --color-relay: #1f6b52;
+  --color-relay-soft: #e3efe9;
+  --color-on-relay: #ffffff;
+  --color-caution: #9a6212;
+  --color-fault: #b23a2b;
+  --color-fault-soft: #f8e7e4;
+
+  --text-xs: 0.8125rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.75rem;
+
+  --radius-control: 6px;
+  --radius-panel: 10px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-paper: #121614;
+    --color-surface: #191e1b;
+    --color-ink: #e4eae6;
+    --color-muted: #93a29b;
+    --color-line: #2a322e;
+    --color-relay: #5cc79c;
+    --color-relay-soft: #1d2f27;
+    --color-on-relay: #0d1d16;
+    --color-caution: #e0a54a;
+    --color-fault: #f07b6b;
+    --color-fault-soft: #35201d;
+  }
+}
+
+@layer base {
+  html {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3 {
+    line-height: 1.2;
+    font-weight: 600;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-relay);
+    outline-offset: 2px;
+  }
+  ::selection {
+    background: var(--color-relay-soft);
+  }
+  dialog::backdrop {
+    background: color-mix(in oklab, var(--color-ink) 35%, transparent);
+  }
+  dialog[open] {
+    animation: dialog-in 120ms ease-out;
+  }
+}
+
+@keyframes dialog-in {
+  from { opacity: 0; transform: translateY(4px); }
+}
+
+@keyframes relay-draw {
+  from { transform: scaleY(0); }
+}
+
+.relay-line-drawn {
+  transform-origin: top;
+  animation: relay-draw 300ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

@@ -9,7 +9,7 @@ import { count, daysAgo, usd } from "@/ui/format";
 import { ErrorNote, Loading, Mono, PageHeader } from "@/ui/primitives";
 import { CallSnippet } from "@/features/routes/CallSnippet";
 
-type Setup = { credentials: Credential[]; routes: Route[]; keys: GatewayKey[]; usage: Usage };
+type Setup = { credentials: Credential[]; routes: Route[]; keys: GatewayKey[]; usage: Usage | undefined };
 
 type Step = {
   title: string;
@@ -21,6 +21,7 @@ type Step = {
 const link = "font-medium text-relay underline-offset-4 hover:underline";
 const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
 const activeKeys = (s: Setup) => s.keys.filter((k) => !k.revoked_at);
+const okCall = (s: Setup) => s.usage?.recent.find((e) => e.outcome === "ok" && e.status < 400);
 
 const steps: Step[] = [
   {
@@ -74,8 +75,12 @@ const steps: Step[] = [
   },
   {
     title: "Make your first call",
-    done: (s) => s.usage.recent.length > 0,
-    doneNote: (s) => `Last call to ${s.usage.recent[0]?.route ?? "a route"}`,
+    done: (s) => okCall(s) !== undefined,
+    doneNote: (s) => (
+      <>
+        Last answered on <Mono>{okCall(s)?.route}</Mono>
+      </>
+    ),
     todo: (s) => (
       <>
         <p>Put your gateway key in <Mono>$GATEWAY_KEY</Mono> and run this. The call shows up here once it lands.</p>
@@ -93,20 +98,30 @@ export function OverviewPage() {
   const credentials = useQuery(credentialsQuery);
   const routes = useQuery(routesQuery);
   const keys = useQuery(gatewayKeysQuery);
-  const usage = useQuery(usageQuery({ from: daysAgo(6), to: daysAgo(0) }));
+  const setupWith = (usage: Usage | undefined): Setup | undefined =>
+    credentials.data && routes.data && keys.data
+      ? { credentials: credentials.data, routes: routes.data, keys: keys.data, usage }
+      : undefined;
+  const usage = useQuery({
+    ...usageQuery({ from: daysAgo(6), to: daysAgo(0) }),
+    refetchInterval: (q) => {
+      const setup = setupWith(q.state.data);
+      return setup && currentStep(setup) === steps.length - 1 ? 5_000 : false;
+    },
+  });
 
-  const error = [credentials, routes, keys, usage].find((q) => q.error)?.error;
+  const error = [credentials, routes, keys].find((q) => q.error)?.error;
+  const setup = setupWith(usage.data);
 
   let body: ReactNode;
   if (error) body = <ErrorNote error={error} />;
-  else if (!credentials.data || !routes.data || !keys.data || !usage.data) body = <Loading />;
+  else if (!setup || usage.isPending) body = <Loading />;
   else {
-    const setup: Setup = { credentials: credentials.data, routes: routes.data, keys: keys.data, usage: usage.data };
-    const current = steps.findIndex((s) => !s.done(setup));
+    const current = currentStep(setup);
     body = (
       <>
         {current !== -1 && <GetStarted setup={setup} current={current} />}
-        <WeekSummary usage={setup.usage} />
+        {setup.usage ? <WeekSummary usage={setup.usage} /> : <ErrorNote error={usage.error} />}
         {current === -1 && setup.routes[0] && (
           <section className="mt-12">
             <h2 className="text-base">Call a route</h2>
@@ -127,6 +142,10 @@ export function OverviewPage() {
       {body}
     </>
   );
+}
+
+function currentStep(setup: Setup): number {
+  return steps.findIndex((s) => !s.done(setup));
 }
 
 function GetStarted({ setup, current }: { setup: Setup; current: number }) {

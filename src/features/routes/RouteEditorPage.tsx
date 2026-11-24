@@ -7,10 +7,10 @@ import { clsx } from "clsx";
 import { credentialsQuery, routesQuery, useDeleteRoute, useSaveRoute } from "@/api/queries";
 import type { CacheMode, Credential, HandoffMode, Route, RouteSpec, RouteTarget } from "@/api/types";
 import { checkLabel, providerName } from "@/ui/format";
+import { CallSnippet } from "./CallSnippet";
 import {
   Button,
   ConfirmDialog,
-  CopyButton,
   Dot,
   ErrorNote,
   Field,
@@ -445,10 +445,6 @@ function modelPlaceholder(provider?: string) {
 }
 
 function TryIt({ alias }: { alias: string }) {
-  const curl = `curl ${window.location.origin}/v1/chat/completions \\
-  -H "Authorization: Bearer $GATEWAY_KEY" \\
-  -H "Content-Type: application/json" \\
-  -d '{"model": "${alias}", "messages": [{"role": "user", "content": "Hello"}]}'`;
   return (
     <section className="mt-12">
       <h2 className="text-base">Call it</h2>
@@ -460,12 +456,7 @@ function TryIt({ alias }: { alias: string }) {
         </Link>
         .
       </p>
-      <div className="relative rounded-panel border border-line bg-surface">
-        <pre className="overflow-x-auto p-4 pr-24 font-mono text-[13px] leading-relaxed">{curl}</pre>
-        <div className="absolute top-3 right-3">
-          <CopyButton value={curl} />
-        </div>
-      </div>
+      <CallSnippet alias={alias} />
     </section>
   );
 }

@@ -221,8 +221,8 @@ function RouteEditor({ route, credentials }: { route?: Route; credentials: Crede
 }
 
 const cacheHint: Record<CacheMode, string> = {
-  auto: "Repeat requests get the stored answer.",
-  always: "Same as auto; reserved for stricter caching.",
+  auto: "Repeats of a request with temperature 0 get the stored answer. Requests that use tools are never cached.",
+  always: "Repeats get the stored answer at any temperature. Requests that use tools are never cached.",
   off: "Every request reaches a provider.",
 };
 

@@ -28,8 +28,8 @@ Read these first, in order:
 
 ## Do next
 
-1. **Make it compile:** done. `npm run check` passes. The five missing pages are placeholders in `src/features/{overview,usage,logs,settings,account}/` that step 3 replaces. On Windows, run Vitest from a shell whose cwd is `C:\llm-gateway-web` with an uppercase drive letter. From `c:\` (how VS Code opens this folder) Vitest loads its runner twice and fails with "failed to find the current suite". Put this in the README.
-2. **Check one invented hint:** in `RouteEditorPage`, `cacheHint.always` was guessed. Read `llm-gateway/internal/cache` (`RequestCacheable`) and write the real difference between `auto` and `always`.
+1. **Make it compile:** done. `npm run check` passes. The five missing pages are placeholders in `src/features/{overview,usage,logs,settings,account}/` that step 3 replaces. On Windows, run Vitest from a shell whose cwd is `C:\llm-gateway-web` with an uppercase drive letter. From `c:\` (how VS Code opens this folder) Vitest loads its runner twice and fails with "failed to find the current suite". Put this in the README. The `dev` project skill at `.claude/skills/dev/SKILL.md` records it too.
+2. **Check one invented hint:** done. The cache hints now match `RequestCacheable`. `auto` caches only requests with `temperature` 0, `always` caches at any temperature, and neither caches requests that use tools.
 3. **Write the missing pages**, per the build plan:
    - **Overview:** a numbered get-started sequence built from live data (provider key, then route, then gateway key, then first call), plus a 7-day summary.
    - **Usage:** filters, totals, a daily chart, a table by model, the budget meter and recent requests. Load the `dataviz` skill before writing the chart.

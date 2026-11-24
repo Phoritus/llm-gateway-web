@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { ApiError } from "@/api/client";
 import { meQuery, queryClient, useChangePassword, useLogoutAll } from "@/api/queries";
 import { Button, ConfirmDialog, ErrorNote, Loading, PageHeader, Panel, TextField, fieldError } from "@/ui/primitives";
 
@@ -30,10 +29,6 @@ function PasswordForm() {
   const [current, setCurrent] = useState("");
   const [next, setNext] = useState("");
   const change = useChangePassword();
-  const wrongCurrent =
-    change.error instanceof ApiError && change.error.code === "invalid_credentials"
-      ? "Current password is incorrect."
-      : fieldError(change.error, "current_password");
 
   return (
     <Panel className="p-5">
@@ -61,7 +56,7 @@ function PasswordForm() {
           required
           value={current}
           onChange={(e) => setCurrent(e.target.value)}
-          error={wrongCurrent}
+          error={fieldError(change.error, "current_password")}
         />
         <TextField
           label="New password"
@@ -74,7 +69,7 @@ function PasswordForm() {
           hint="At least 12 characters."
           error={fieldError(change.error, "new_password")}
         />
-        <ErrorNote error={wrongCurrent ? null : change.error} fields={["current_password", "new_password"]} />
+        <ErrorNote error={change.error} fields={["current_password", "new_password"]} />
         <div>
           <Button type="submit" variant="primary" busy={change.isPending}>
             Change password

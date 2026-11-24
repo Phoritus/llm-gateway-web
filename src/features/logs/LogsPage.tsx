@@ -58,7 +58,7 @@ export function LogsPage() {
       ) : (
         <>
           {logging && (
-            <p className="mb-5 flex items-center gap-2 text-sm">
+            <p className="mb-5 flex w-fit items-center gap-2 text-sm">
               <Dot tone={logging.enabled ? "ok" : "idle"} />
               {logging.enabled ? (
                 <span>Prompt logging is on. Logs are deleted after {logging.retention_days} days.</span>
